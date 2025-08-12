@@ -39,18 +39,18 @@ const Navbar = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-[#ADADAD] overflow-visible">
+		<div className="flex items-center justify-between text-medium py-4 mb-2 border-b border-b-[#ADADAD] overflow-visible">
 			<div className="flex flex-col items-start">
 				<img
 					onClick={() => navigate("/")}
-					className="w-40 cursor-pointer hover:bg-white hover:scale-125  transition-all duration-300 "
+					className="w-32 cursor-pointer hover:bg-white hover:scale-125  transition-all duration-300 "
 					src={logofinal}
 					alt="Welcome to SkiCare Medical & Diagnostic"
 				/>
 				{/* Dark/Light mode toggle */}
 				<button
 					onClick={toggleTheme}
-					className="mt-2 flex items-center gap-2 px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+					className="mt-2 flex items-center gap-2 px-4 py-1 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow hover:bg-gray-200 dark:hover:bg-gray-700 transition"
 					aria-label="Toggle dark mode"
 				>
 					{theme === "dark" ? (
@@ -89,50 +89,35 @@ const Navbar = () => {
 					</span>
 				</button>
 			</div>
-			<ul className="md:flex items-center gap-8 px-6 py-4 font-medium hidden">
+			<ul className="md:flex items-center gap-8 px-5 py-4 font-medium hidden">
 				<NavLink to="/">
-					<li className="py-1 text-2xl hover:text-primary transition duration-300 hover:bg-white hover:text-3xl hover:scale-105">
+					<li className="py-1 text-xl hover:text-primary transition duration-300 hover:bg-white hover:text-2xl hover:scale-105">
 						HOME
 					</li>
 					<hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
 				</NavLink>
 
 				<NavLink to="/doctors">
-					<li className="py-1 text-2xl hover:text-primary transition duration-300 hover:bg-white hover:text-3xl hover:scale-105">
-						ALL DOCTORS
+					<li className="py-1 text-xl hover:text-primary transition duration-300 hover:bg-white hover:text-2xl hover:scale-105">
+						DOCTORS
 					</li>
 					<hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
 				</NavLink>
 
 				<NavLink to="/about">
-					<li className="py-1 text-2xl hover:text-primary transition duration-300 hover:bg-white hover:text-3xl hover:scale-105">
+					<li className="py-1 text-xl hover:text-primary transition duration-300 hover:bg-white hover:text-2xl hover:scale-105">
 						ABOUT
 					</li>
 					<hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
 				</NavLink>
 
 				<NavLink to="/contact">
-					<li className="py-1 text-2xl hover:text-primary transition duration-300 hover:bg-white hover:text-3xl hover:scale-105">
+					<li className="py-1 text-xl hover:text-primary transition duration-300 hover:bg-white hover:text-2xl hover:scale-105">
 						CONTACT
 					</li>
 					<hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
 				</NavLink>
 			</ul>
-
-			{/* Emergency button right-aligned, before login/profile, only on home page */}
-			{location.pathname === "/" && (
-				<NavLink
-					to="/emergency"
-					className="hidden md:block ml-4"
-				>
-					<div
-						className="py-1 px-6 text-2xl text-red-700 font-bold rounded-full pulse-emergency shadow-lg hover:text-primary transition duration-300 hover:bg-white hover:text-3xl hover:scale-105"
-						style={{ minWidth: "fit-content" }}
-					>
-						EMERGENCY
-					</div>
-				</NavLink>
-			)}
 
 			<div className="flex items-center gap-4  ">
 				{token && userData ? (

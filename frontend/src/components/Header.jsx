@@ -1,9 +1,10 @@
 import React from "react";
 import { assets } from "../assets/assets";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
 	return (
-		<div className="flex flex-col md:flex-row flex-wrap bg-gradient-to-r from-[#5c5c5c] to-[#1c1c1c] rounded-lg px-6 md:px-10 lg:px-20 ">
+		<div className="flex flex-col md:flex-row flex-wrap bg-gradient-to-r from-[#5c5c5c] to-[#1c1c1c] rounded-lg px-6 md:px-10 lg:px-20 py-0 mt-2 ">
 			{/* --------- Header Left --------- */}
 			<div className="md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px]">
 				<p className="text-3xl md:text-4xl lg:text-5xl text-white font-semibold leading-tight md:leading-tight lg:leading-tight">
@@ -23,15 +24,29 @@ const Header = () => {
 				</div>
 				<a
 					href="#speciality"
-					className="flex items-center gap-2 bg-white px-10 py-2 rounded-full text-[#595959] text-lg m-auto md:m-0 hover:scale-105 transition-all duration-300 hover:bg-orange-400 hover:border-r-gray-950 hover:text-2xl hover:text-indigo-600 cursor-pointer"
+					className="flex items-center gap-2 bg-white px-10 py-2 rounded-full text-[#595959] text-lg m-auto md:m-0 hover:scale-90 transition-all duration-300 hover:bg-orange-400 hover:border-r-gray-950 hover:text-2xl hover:text-indigo-600 cursor-pointer"
 				>
-					Book appointment{" "}
+					Book appointment
 					<img
 						className="w-3"
 						src={assets.arrow_icon}
 						alt=""
 					/>
 				</a>
+				{/* Emergency button right-aligned, before login/profile, only on home page */}
+				{location.pathname === "/" && (
+					<NavLink
+						to="/emergency"
+						className="hidden md:block ml-4"
+					>
+						<div
+							className="flex items-center gap-2 py-2 px-10 rounded-full text-lg m-auto md:m-0 text-red-700 font-bold pulse-emergency shadow-lg hover:text-primary transition duration-300 hover:bg-white  hover:border-r-gray-950 hover:text-2xl hover:scale-100 cursor-pointer"
+							//style={{ minWidth: "fit-content" }}
+						>
+							EMERGENCY
+						</div>
+					</NavLink>
+				)}
 			</div>
 
 			{/* --------- Header Right --------- */}

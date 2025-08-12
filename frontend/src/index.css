@@ -1,3 +1,23 @@
+@keyframes ticker {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+.animate-ticker {
+    animation-name: ticker;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+    animation-duration: 60s; /* Slower speed */
+    min-width: 250vw;
+}
+.animate-ticker:hover {
+    animation-play-state: paused;
+    cursor: pointer;
+}
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 /* Emergency pulse animation */
 .pulse-emergency {
