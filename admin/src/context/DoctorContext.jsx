@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-	// const backendUrl = "https://ski-medical-mern-stack-backend.onrender.com"
+	//const backendUrl = "https://ski-medical-mern-stack-backend.onrender.com"
 	const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 	const [dToken, setDToken] = useState(
