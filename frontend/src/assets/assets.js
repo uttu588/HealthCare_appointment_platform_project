@@ -1,3 +1,12 @@
+import newsImage4 from "./newsImage4.jpeg";
+import newsImage5 from "./newsImage5.jpeg";
+import newsImage6 from "./newsImage6.jpeg";
+import newsImage1 from "./newsImage1.jpeg";
+import newsImage2 from "./newsImage2.jpeg";
+import newsImage3 from "./newsImage3.jpeg";
+import newsImage01 from "./newsImage01.jpg";
+import newsImage02 from "./newsImage02.jpg";
+import newsImage03 from "./newsImage03.jpg";
 import appointment_img from "./appointment_img.png";
 import header_img from "./header_img.png";
 import group_profiles from "./group_profiles.png";
@@ -65,6 +74,15 @@ export const assets = {
 	file1,
 	logo2,
 	logoski,
+	newsImage1,
+	newsImage2,
+	newsImage3,
+	newsImage4,
+	newsImage5,
+	newsImage6,
+	newsImage01,
+	newsImage02,
+	newsImage03,
 };
 
 export const specialityData = [

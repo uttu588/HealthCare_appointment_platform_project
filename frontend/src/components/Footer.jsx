@@ -68,7 +68,58 @@ const Footer = () => {
 
 			{/* Footer bottom */}
 			<div>
-				<hr />
+				<hr className="border-r-2 border-primary" />
+				{/* News Ticker */}
+				<div className="overflow-hidden w-full py-2">
+					<div className="flex items-center gap-8 animate-marquee">
+						<img
+							src={assets.newsImage1}
+							alt="News 1"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage2}
+							alt="News 2"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage3}
+							alt="News 3"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage4}
+							alt="News 4"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage5}
+							alt="News 5"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage6}
+							alt="News 6"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 max-w-full object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage01}
+							alt="News 01"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage02}
+							alt="News 02"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 object-cover transition-transform duration-300 hover:scale-105"
+						/>
+						<img
+							src={assets.newsImage03}
+							alt="News 03"
+							className="rounded-xl shadow-lg border-2 border-primary inline-block w-72 h-72 object-cover transition-transform duration-300 hover:scale-105"
+						/>
+					</div>
+				</div>
+				<hr className="border-r-4 border-green-950" />
 				<p className="py-5 text-sm text-center font-bold text-violet-700">
 					Copyright 2025 @ SkiCare.com - All Right Reserved.
 				</p>

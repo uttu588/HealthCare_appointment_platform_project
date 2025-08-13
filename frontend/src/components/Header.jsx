@@ -37,12 +37,9 @@ const Header = () => {
 				{location.pathname === "/" && (
 					<NavLink
 						to="/emergency"
-						className="hidden md:block ml-4"
+						className="block ml-0 md:ml-4 w-full md:w-auto"
 					>
-						<div
-							className="flex items-center gap-2 py-2 px-10 rounded-full text-lg m-auto md:m-0 text-red-700 font-bold pulse-emergency shadow-lg hover:text-primary transition duration-300 hover:bg-white  hover:border-r-gray-950 hover:text-2xl hover:scale-100 cursor-pointer"
-							//style={{ minWidth: "fit-content" }}
-						>
+						<div className="flex items-center justify-center gap-2 py-2 px-8 md:px-10 rounded-full text-base md:text-lg m-auto md:m-0 text-red-700 font-bold pulse-emergency shadow-lg hover:text-primary transition duration-300 hover:bg-white hover:border-r-gray-950 hover:text-2xl hover:scale-100 cursor-pointer w-full md:w-auto">
 							EMERGENCY
 						</div>
 					</NavLink>
