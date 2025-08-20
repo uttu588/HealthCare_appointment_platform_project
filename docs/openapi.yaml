@@ -1,0 +1,505 @@
+openapi: 3.0.3
+info:
+  title: Healthcare Appointment Platform API
+  version: '1.0.0'
+  description: |
+    Detailed OpenAPI spec for the Healthcare Appointment Platform. Includes auth, users, doctors,
+    appointments, payments, media and AI endpoints. Use this spec to generate server/client SDKs
+    or for API documentation (Swagger UI / Redoc).
+servers:
+  - url: https://api.example.com
+    description: Production server (replace with actual URL)
+  - url: http://localhost:5000
+    description: Local development server
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Validation failed
+        details:
+          type: object
+          nullable: true
+
+    UserBase:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 64a1f2b3c4d5e6f7a8b9c0d1
+        name:
+          type: string
+          example: Ritik Sharma
+        email:
+          type: string
+          format: email
+          example: ritik@example.com
+        role:
+          type: string
+          enum: [patient, doctor, admin]
+        phone:
+          type: string
+          nullable: true
+        profileImageUrl:
+          type: string
+          nullable: true
+
+    RegisterRequest:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name: { type: string }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 6 }
+        role: { type: string, enum: [patient, doctor] }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBase'
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Doctor:
+      allOf:
+        - $ref: '#/components/schemas/UserBase'
+        - type: object
+          properties:
+            specialization: { type: string }
+            qualifications:
+              type: array
+              items: { type: string }
+            clinic: { type: object }
+            consultationFee: { type: number }
+
+    Appointment:
+      type: object
+      properties:
+        id: { type: string }
+        patientId: { type: string }
+        doctorId: { type: string }
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, completed, no-show]
+        reason: { type: string, nullable: true }
+        paymentId: { type: string, nullable: true }
+
+    AppointmentCreateRequest:
+      type: object
+      required: [doctorId, startTime]
+      properties:
+        doctorId: { type: string }
+        startTime: { type: string, format: date-time }
+        reason: { type: string }
+        paymentRequired: { type: boolean, default: false }
+
+    AppointmentListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+
+    PaymentSessionRequest:
+      type: object
+      required: [appointmentId, amount, gateway]
+      properties:
+        appointmentId: { type: string }
+        amount: { type: number }
+        currency: { type: string, default: INR }
+        gateway: { type: string, enum: [stripe, razorpay] }
+
+    PaymentSessionResponse:
+      type: object
+      properties:
+        gateway: { type: string }
+        sessionData:
+          type: object
+          description: Gateway-specific session data (sessionId, clientSecret, url)
+
+    Payment:
+      type: object
+      properties:
+        id: { type: string }
+        appointmentId: { type: string }
+        gateway: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+        status: { type: string }
+        gatewayPaymentId: { type: string }
+
+    MediaUploadResponse:
+      type: object
+      properties:
+        url: { type: string }
+        publicId: { type: string }
+
+    PrescriptionProcessRequest:
+      type: object
+      properties:
+        fileUrl: { type: string }
+
+    PrescriptionProcessResponse:
+      type: object
+      properties:
+        prescriptionId: { type: string }
+        extractedText: { type: string }
+        summary: { type: string }
+
+    AdminStatsResponse:
+      type: object
+      properties:
+        totalUsers: { type: integer }
+        totalAppointments: { type: integer }
+        revenue: { type: number }
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema: { type: integer, default: 1 }
+    LimitParam:
+      name: limit
+      in: query
+      schema: { type: integer, default: 10 }
+
+paths:
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user (patient or doctor)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and receive JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/users/me:
+    get:
+      tags: [Users]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBase'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags: [Users]
+      summary: Update profile (multipart/form-data)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                phone: { type: string }
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBase'
+        '400':
+          description: Validation error
+
+  /api/doctors:
+    get:
+      tags: [Doctors]
+      summary: List doctors with optional filters
+      parameters:
+        - in: query
+          name: specialization
+          schema: { type: string }
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Doctor'
+                  total: { type: integer }
+
+  /api/appointments:
+    post:
+      tags: [Appointments]
+      summary: Create an appointment (patient)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '409':
+          description: Conflict (double booking)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags: [Appointments]
+      summary: List appointments (role-aware)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: role
+          schema: { type: string, enum: [doctor, patient] }
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentListResponse'
+
+  /api/appointments/{id}:
+    get:
+      tags: [Appointments]
+      summary: Get appointment by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/payments/create-session:
+    post:
+      tags: [Payments]
+      summary: Create payment session (Stripe/Razorpay)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentSessionRequest'
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSessionResponse'
+        '400':
+          description: Invalid request
+
+  /api/payments/webhook/stripe:
+    post:
+      tags: [Payments]
+      summary: Stripe webhook endpoint
+      description: Validate stripe signature and update payment records.
+      requestBody:
+        required: true
+        content:
+          application/json: {}
+      responses:
+        '200': { description: Received }
+        '400':
+          description: Invalid signature
+
+  /api/media/upload:
+    post:
+      tags: [Media]
+      summary: Upload media file (image | pdf)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaUploadResponse'
+        '400':
+          description: Validation error
+
+  /api/prescriptions/{appointmentId}/process:
+    post:
+      tags: [AI]
+      summary: Extract and summarize prescription
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: appointmentId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrescriptionProcessRequest'
+      responses:
+        '200':
+          description: Processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionProcessResponse'
+        '202':
+          description: Processing started (async)
+
+  /api/admin/stats:
+    get:
+      tags: [Admin]
+      summary: Admin analytics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminStatsResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Users
+  - name: Doctors
+  - name: Appointments
+  - name: Payments
+  - name: Media
+  - name: AI
+  - name: Admin
+
